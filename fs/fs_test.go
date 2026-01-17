@@ -27,20 +27,26 @@ func TestValidatePath(t *testing.T) {
 		{"parent traversal", "..", fs.ErrPathTraversal},
 		{"parent traversal with path", "../file.txt", fs.ErrPathTraversal},
 		{"deep traversal", "foo/../../bar", fs.ErrPathTraversal},
-		{"absolute unix", "/etc/passwd", fs.ErrAbsolutePath},
 
 		// Backslash handling (Windows-style)
 		{"backslash path", `foo\bar\baz.txt`, nil},
 		{"backslash traversal", `foo\..\..\..\bar`, fs.ErrPathTraversal},
 	}
 
-	// Add Windows-specific test
+	// Add platform-specific absolute path tests
 	if runtime.GOOS == "windows" {
 		tests = append(tests, struct {
 			name    string
 			path    string
 			wantErr error
 		}{"windows absolute", `C:\Windows\System32`, fs.ErrAbsolutePath})
+	} else {
+		// On Unix, paths starting with / are absolute
+		tests = append(tests, struct {
+			name    string
+			path    string
+			wantErr error
+		}{"absolute unix", "/etc/passwd", fs.ErrAbsolutePath})
 	}
 
 	for _, tt := range tests {
