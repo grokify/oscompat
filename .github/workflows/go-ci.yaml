@@ -1,48 +1,25 @@
-name: CI
+name: Go CI
+permissions:
+  contents: read
 on:
   push:
     branches:
       - main
+    paths:
+      - '**.go'
+      - 'go.mod'
+      - 'go.sum'
+      - '.github/workflows/go-ci.yaml'
   pull_request:
     branches:
       - main
+    paths:
+      - '**.go'
+      - 'go.mod'
+      - 'go.sum'
+      - '.github/workflows/go-ci.yaml'
   workflow_dispatch:
 
 jobs:
-  test:
-    strategy:
-      fail-fast: false
-      matrix:
-        go-version: [1.25.x]
-        platform: [ubuntu-latest, macos-latest, windows-latest]
-    runs-on: ${{ matrix.platform }}
-    steps:
-      - name: Install Go
-        uses: actions/setup-go@v6
-        with:
-          go-version: ${{ matrix.go-version }}
-      - name: Checkout code
-        uses: actions/checkout@v6
-      - name: Run tests
-        shell: bash
-        run: go test -v -race -covermode=atomic -coverprofile=coverage.out ./...
-      - name: Upload coverage
-        if: matrix.platform == 'ubuntu-latest' && matrix.go-version == '1.25.x'
-        uses: codecov/codecov-action@v6
-        with:
-          files: coverage.out
-          fail_ci_if_error: false
-
-  # Ensure all tests passed
-  test-summary:
-    needs: test
-    runs-on: ubuntu-latest
-    if: always()
-    steps:
-      - name: Check test results
-        run: |
-          if [ "${{ needs.test.result }}" != "success" ]; then
-            echo "Some tests failed"
-            exit 1
-          fi
-          echo "All tests passed on all platforms"
+  ci:
+    uses: grokify/.github/.github/workflows/go-ci.yaml@main
