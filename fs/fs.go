@@ -238,3 +238,10 @@ func PathHasPrefix(path, prefix string) bool {
 	}
 	return strings.HasPrefix(strings.ToLower(p)+"/", strings.ToLower(pfx))
 }
+
+// NormalizeLineEndings converts Windows line endings (CRLF) to Unix (LF).
+// This is useful when reading text files that may have been created on Windows
+// or when files are checked out with CRLF line endings on Windows via git.
+func NormalizeLineEndings(s string) string {
+	return strings.ReplaceAll(s, "\r\n", "\n")
+}

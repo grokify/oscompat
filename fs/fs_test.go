@@ -470,3 +470,30 @@ func TestBirthtimeNonExistent(t *testing.T) {
 		t.Error("Birthtime() on non-existent file should return error")
 	}
 }
+
+func TestNormalizeLineEndings(t *testing.T) {
+	tests := []struct {
+		name  string
+		input string
+		want  string
+	}{
+		{"empty", "", ""},
+		{"no line endings", "hello world", "hello world"},
+		{"unix line endings", "line1\nline2\nline3", "line1\nline2\nline3"},
+		{"windows line endings", "line1\r\nline2\r\nline3", "line1\nline2\nline3"},
+		{"mixed line endings", "line1\r\nline2\nline3\r\n", "line1\nline2\nline3\n"},
+		{"only CRLF", "\r\n", "\n"},
+		{"multiple CRLF", "\r\n\r\n\r\n", "\n\n\n"},
+		{"trailing CRLF", "hello\r\n", "hello\n"},
+		{"CR only preserved", "line1\rline2", "line1\rline2"},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := fs.NormalizeLineEndings(tt.input)
+			if got != tt.want {
+				t.Errorf("NormalizeLineEndings(%q) = %q, want %q", tt.input, got, tt.want)
+			}
+		})
+	}
+}
