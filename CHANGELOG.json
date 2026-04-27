@@ -1,0 +1,56 @@
+{
+  "irVersion": "1.0",
+  "project": "oscompat",
+  "repository": "https://github.com/grokify/oscompat",
+  "versioning": "semver",
+  "commitConvention": "conventional",
+  "maintainers": ["grokify"],
+  "releases": [
+    {
+      "version": "v0.3.0",
+      "date": "2026-04-27",
+      "highlights": [
+        { "description": "Breaking change: Capture functions now return errors for proper error handling" }
+      ],
+      "added": [
+        { "description": "`fs.NormalizeLineEndings()` for CRLF to LF conversion", "commit": "9a0bdb7" }
+      ],
+      "changed": [
+        { "description": "**BREAKING**: `testutil.CaptureStdout()` now returns `(string, error)` instead of `string`", "commit": "3e691d6" },
+        { "description": "**BREAKING**: `testutil.CaptureStderr()` now returns `(string, error)` instead of `string`", "commit": "3e691d6" },
+        { "description": "**BREAKING**: `testutil.CaptureOutput()` now returns `(string, string, error)` instead of `(string, string)`", "commit": "3e691d6" }
+      ]
+    },
+    {
+      "version": "v0.2.0",
+      "date": "2026-04-26",
+      "highlights": [
+        { "description": "New testutil package for cross-platform stdout/stderr capture" }
+      ],
+      "added": [
+        { "description": "`testutil.CaptureStdout()` for capturing stdout during function execution", "commit": "c00a57b" },
+        { "description": "`testutil.CaptureStderr()` for capturing stderr during function execution", "commit": "c00a57b" },
+        { "description": "`testutil.CaptureOutput()` for capturing both stdout and stderr", "commit": "c00a57b" }
+      ],
+      "infrastructure": [
+        { "description": "Add shared CI workflows", "commit": "03edfe4" },
+        { "description": "Bump codecov/codecov-action from 5 to 6", "commit": "9509124" }
+      ]
+    },
+    {
+      "version": "v0.1.0",
+      "date": "2025-01-17",
+      "highlights": [
+        { "description": "Initial release with cross-platform utilities for Go" }
+      ],
+      "added": [
+        { "description": "`id` package: Cross-platform unique identifier generation using `crypto/rand`" },
+        { "description": "`process` package: Cross-platform process management (detach, signal)" },
+        { "description": "`paths` package: XDG-compliant config/data/cache directory resolution" },
+        { "description": "`fs` package: Path validation, normalization, permissions, birthtime" },
+        { "description": "`tsync` package: Tolerant timestamp comparison for file sync" },
+        { "description": "`localnet` package: Cross-platform local IPC (Unix sockets / TCP)" }
+      ]
+    }
+  ]
+}
