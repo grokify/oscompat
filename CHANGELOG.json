@@ -7,6 +7,17 @@
   "maintainers": ["grokify"],
   "releases": [
     {
+      "version": "v0.4.0",
+      "date": "2026-06-13",
+      "highlights": [
+        { "description": "Cross-platform executable detection for file permission checks" }
+      ],
+      "added": [
+        { "description": "`fs.IsExecutable()` for cross-platform executable file detection", "commit": "7f104d0" },
+        { "description": "`fs.IsExecutableInfo()` for executable detection with existing FileInfo", "commit": "7f104d0" }
+      ]
+    },
+    {
       "version": "v0.3.0",
       "date": "2026-04-27",
       "highlights": [

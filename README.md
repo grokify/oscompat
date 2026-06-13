@@ -119,11 +119,21 @@ Cross-platform filesystem utilities.
 **Why this exists:**
 
 - File permissions (0755, 0644) are Unix-centric; Windows ignores them
+- Executable detection differs: Unix uses permission bits, Windows uses file extensions
 - Path separators differ (/ vs \)
 - Path traversal validation needs to handle both separators
 
 ```go
 import "github.com/grokify/oscompat/fs"
+
+// Check if a file is executable (cross-platform)
+isExec, err := fs.IsExecutable("/path/to/file")
+// Unix:    checks if any execute bit is set (mode & 0111)
+// Windows: checks for .exe/.cmd/.bat/.com/.ps1 or no extension (shell scripts)
+
+// Check with existing FileInfo (more efficient in loops)
+info, _ := os.Stat("/path/to/file")
+isExec := fs.IsExecutableInfo(info, "/path/to/file")
 
 // Validate path for traversal attacks (handles both / and \)
 err := fs.ValidatePath("foo/../../../etc/passwd") // returns ErrPathTraversal
