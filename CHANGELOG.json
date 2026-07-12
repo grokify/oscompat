@@ -7,6 +7,22 @@
   "maintainers": ["grokify"],
   "releases": [
     {
+      "version": "v0.5.0",
+      "date": "2026-07-12",
+      "highlights": [
+        { "description": "Cross-platform test utilities for home directory and duration assertions" }
+      ],
+      "added": [
+        { "description": "`testutil.SetTempHomeDir()` sets both HOME and USERPROFILE for cross-platform home directory tests", "commit": "93c7a49" },
+        { "description": "`testutil.DurationNonNegative()` for Windows-safe duration checks (timer resolution ~15.6ms)", "commit": "e517f8f" },
+        { "description": "`testutil.AssertDurationNonNegative()` test helper for duration assertions", "commit": "e517f8f" },
+        { "description": "`testutil.WindowsTimerResolution` constant (16ms)", "commit": "e517f8f" }
+      ],
+      "documentation": [
+        { "description": "Update README shields", "commit": "2e728d3" }
+      ]
+    },
+    {
       "version": "v0.4.0",
       "date": "2026-06-13",
       "highlights": [
