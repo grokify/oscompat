@@ -47,11 +47,17 @@ func exists(pid int) (bool, error) {
 	}
 	defer syscall.CloseHandle(h) //nolint:errcheck // a failed close of a read-only handle is not actionable
 
+	return running(h, pid)
+}
+
+// running reports whether the process behind the handle has not exited. A
+// process object outlives the process for as long as any handle to it stays
+// open, so being able to open a PID does not prove the process is running.
+func running(h syscall.Handle, pid int) (bool, error) {
 	var code uint32
 	if err := syscall.GetExitCodeProcess(h, &code); err != nil {
 		return false, fmt.Errorf("process: exit code for pid %d: %w", pid, err)
 	}
-	// A handle can outlive its process, so a live handle is not enough.
 	return code == stillActive, nil
 }
 
@@ -64,6 +70,16 @@ func startTime(pid int) (time.Time, error) {
 		return time.Time{}, fmt.Errorf("process: open pid %d: %w", pid, err)
 	}
 	defer syscall.CloseHandle(h) //nolint:errcheck // a failed close of a read-only handle is not actionable
+
+	// An exited process still has a creation time while its object lingers,
+	// which would let a stale record match, so check that it is running.
+	alive, err := running(h, pid)
+	if err != nil {
+		return time.Time{}, err
+	}
+	if !alive {
+		return time.Time{}, ErrNotFound
+	}
 
 	var creation, exit, kernel, user syscall.Filetime
 	if err := syscall.GetProcessTimes(h, &creation, &exit, &kernel, &user); err != nil {
