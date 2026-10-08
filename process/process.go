@@ -4,8 +4,10 @@
 //   - Signal handling (Windows lacks SIGTERM, uses Kill instead)
 //   - Process group management (Unix has Setpgid, Windows does not)
 //   - Daemon/service detachment patterns
+//   - Liveness and start time (Exists, StartTime), which detect a reused PID
+//   - Handing the terminal to another program (Exec)
 //
-// Platform-specific implementations are in process_unix.go and process_windows.go.
+// Platform-specific implementations are in the *_unix.go and *_windows.go files.
 package process
 
 import (

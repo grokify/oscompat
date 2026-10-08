@@ -7,6 +7,18 @@
   "maintainers": ["grokify"],
   "releases": [
     {
+      "version": "v0.6.0",
+      "date": "2026-10-08",
+      "highlights": [
+        { "description": "Process liveness, start time, and exec: detect a reused PID and hand the terminal to another program on Unix and Windows" }
+      ],
+      "added": [
+        { "description": "`process.Exists(pid)` reports whether a process is running; a process owned by another user counts as running, and non-positive PIDs are rejected because they address process groups on Unix", "commit": "1814d6b" },
+        { "description": "`process.StartTime(pid)` returns when a process started (ps on Unix, process creation time on Windows) or `process.ErrNotFound`, so a stale record naming a reused PID can be detected", "commit": "1814d6b" },
+        { "description": "`process.Exec(path, argv)` replaces the current process on Unix and runs the program as a child that exits with its status on Windows", "commit": "1814d6b" }
+      ]
+    },
+    {
       "version": "v0.5.0",
       "date": "2026-07-12",
       "highlights": [

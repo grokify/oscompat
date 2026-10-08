@@ -76,6 +76,17 @@ err := process.Signal(pid)
 
 // Find and signal a process
 err := process.FindAndSignal(pid)
+
+// Is it running? Does it match the process a record was written for?
+ok, err := process.Exists(pid)
+started, err := process.StartTime(pid) // process.ErrNotFound if it is gone
+if err == nil && started.Sub(recorded).Abs() > 2*time.Second {
+    // the PID was reused by a different process
+}
+
+// Hand the terminal to another program: replaces this process on Unix, runs
+// it as a child and exits with its status on Windows. Returns only on failure.
+err = process.Exec(path, []string{"claude", "--resume", id})
 ```
 
 ### paths
