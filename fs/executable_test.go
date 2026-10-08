@@ -12,7 +12,7 @@ func TestIsExecutable(t *testing.T) {
 
 	// Create a non-executable file
 	nonExecPath := filepath.Join(tmpDir, "non-executable.txt")
-	if err := os.WriteFile(nonExecPath, []byte("content"), 0644); err != nil {
+	if err := os.WriteFile(nonExecPath, []byte("content"), 0o600); err != nil {
 		t.Fatalf("Failed to create non-executable file: %v", err)
 	}
 
@@ -24,7 +24,7 @@ func TestIsExecutable(t *testing.T) {
 
 	// Create an executable with .exe extension (for Windows)
 	exePath := filepath.Join(tmpDir, "program.exe")
-	if err := os.WriteFile(exePath, []byte("content"), 0644); err != nil {
+	if err := os.WriteFile(exePath, []byte("content"), 0o600); err != nil {
 		t.Fatalf("Failed to create .exe file: %v", err)
 	}
 
