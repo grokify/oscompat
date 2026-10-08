@@ -415,7 +415,7 @@ func TestBirthtimeSupported(t *testing.T) {
 func TestBirthtime(t *testing.T) {
 	// Create a temp file
 	tmpFile := filepath.Join(t.TempDir(), "test.txt")
-	if err := os.WriteFile(tmpFile, []byte("test"), 0644); err != nil {
+	if err := os.WriteFile(tmpFile, []byte("test"), 0o600); err != nil {
 		t.Fatalf("WriteFile() error: %v", err)
 	}
 
@@ -442,7 +442,7 @@ func TestBirthtime(t *testing.T) {
 func TestBirthtimeInfo(t *testing.T) {
 	// Create a temp file
 	tmpFile := filepath.Join(t.TempDir(), "test.txt")
-	if err := os.WriteFile(tmpFile, []byte("test"), 0644); err != nil {
+	if err := os.WriteFile(tmpFile, []byte("test"), 0o600); err != nil {
 		t.Fatalf("WriteFile() error: %v", err)
 	}
 

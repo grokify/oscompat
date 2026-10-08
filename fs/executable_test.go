@@ -7,6 +7,16 @@ import (
 	"testing"
 )
 
+// writeExecutable creates a file that its owner can execute. IsExecutable
+// looks for any execute bit, so owner-only is enough and is the least
+// permissive mode that works.
+func writeExecutable(t *testing.T, path string, data []byte) {
+	t.Helper()
+	if err := os.WriteFile(path, data, 0o700); err != nil { //nolint:gosec // these tests need the execute bit, which gosec's 0600 limit rules out
+		t.Fatalf("Failed to create executable file: %v", err)
+	}
+}
+
 func TestIsExecutable(t *testing.T) {
 	tmpDir := t.TempDir()
 
@@ -18,9 +28,7 @@ func TestIsExecutable(t *testing.T) {
 
 	// Create an executable file
 	execPath := filepath.Join(tmpDir, "executable")
-	if err := os.WriteFile(execPath, []byte("#!/bin/sh\necho hello"), 0755); err != nil {
-		t.Fatalf("Failed to create executable file: %v", err)
-	}
+	writeExecutable(t, execPath, []byte("#!/bin/sh\necho hello"))
 
 	// Create an executable with .exe extension (for Windows)
 	exePath := filepath.Join(tmpDir, "program.exe")
@@ -103,9 +111,7 @@ func TestIsExecutableInfo(t *testing.T) {
 
 	// Create a file
 	filePath := filepath.Join(tmpDir, "testfile")
-	if err := os.WriteFile(filePath, []byte("content"), 0755); err != nil {
-		t.Fatalf("Failed to create file: %v", err)
-	}
+	writeExecutable(t, filePath, []byte("content"))
 
 	info, err := os.Stat(filePath)
 	if err != nil {
