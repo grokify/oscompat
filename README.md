@@ -237,6 +237,11 @@ defer conn.Close()
 localnet.Cleanup("myapp")
 ```
 
+## Guides
+
+- [Writing tests that pass on Windows](docs/guides/portable-tests.md): wall-clock ties,
+  path separators, open files, signals and line endings.
+
 ## Platform Support
 
 All packages are tested on:
