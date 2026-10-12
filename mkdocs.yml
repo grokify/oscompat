@@ -1,0 +1,66 @@
+site_name: oscompat
+site_description: Cross-platform operating-system compatibility utilities for Go
+site_url: https://grokify.github.io/oscompat/
+repo_url: https://github.com/grokify/oscompat
+repo_name: grokify/oscompat
+
+theme:
+  name: material
+  palette:
+    - scheme: default
+      primary: deep purple
+      accent: purple
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: deep purple
+      accent: purple
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - content.code.copy
+    - content.code.annotate
+
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - admonition
+  - pymdownx.details
+  - tables
+  - toc:
+      permalink: true
+
+# docs/guides/ holds the user guides and docs/releases/ the release notes.
+nav:
+  - Home: index.md
+  - Getting Started: guides/getting-started.md
+  - Guides:
+      - fs (files, permissions, locks): guides/fs.md
+      - process: guides/process.md
+      - paths: guides/paths.md
+      - id: guides/id.md
+      - tsync: guides/tsync.md
+      - localnet: guides/localnet.md
+      - testutil: guides/testutil.md
+      - Writing tests that pass on Windows: guides/portable-tests.md
+  - Releases:
+      - v0.7.0: releases/v0.7.0.md
+      - v0.6.0: releases/v0.6.0.md
+      - v0.5.0: releases/v0.5.0.md
+      - v0.4.0: releases/v0.4.0.md
+      - v0.3.0: releases/v0.3.0.md
+      - v0.2.0: releases/v0.2.0.md
+      - v0.1.0: releases/v0.1.0.md
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/grokify/oscompat
