@@ -139,6 +139,7 @@ func TestLockAcrossProcesses(t *testing.T) {
 		t.Fatal(err)
 	}
 
+	//nolint:gosec // G204: re-executes this test binary with a fixed argument, as the standard library's own tests do
 	cmd := exec.Command(os.Args[0], "-test.run=^TestLockHelperProcess$")
 	cmd.Env = append(os.Environ(), "OSCOMPAT_LOCK_HELPER="+path)
 	out, err := cmd.StdoutPipe()

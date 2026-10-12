@@ -26,6 +26,7 @@ import (
 //
 // On a platform without file locking it returns [ErrLockUnsupported].
 func Lock(ctx context.Context, path string) (unlock func(), err error) {
+	//nolint:gosec // G703: the lock file path is the caller's by design; Lock is for locking whatever file it is given
 	f, err := os.OpenFile(path, os.O_RDWR|os.O_CREATE, PrivateFilePerm)
 	if err != nil {
 		return nil, fmt.Errorf("oscompat/fs: opening lock file: %w", err)
