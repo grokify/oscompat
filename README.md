@@ -237,6 +237,18 @@ defer conn.Close()
 localnet.Cleanup("myapp")
 ```
 
+## Policy
+
+oscompat has **no dependencies**: it imports the Go standard library and itself,
+and nothing else (not even `golang.org/x/sys`), and a test enforces it. That is
+what makes it safe for any module to import, including modules that keep their
+own dependency set small on purpose.
+
+In return, other modules should import oscompat instead of keeping
+platform-specific files of their own. Code that differs by operating system
+belongs here once, tested on every platform. If a difference is missing, add it
+here, using only the standard library.
+
 ## Guides
 
 - [Writing tests that pass on Windows](docs/guides/portable-tests.md): wall-clock ties,
