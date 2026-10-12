@@ -130,6 +130,7 @@ Cross-platform filesystem utilities.
 - Executable detection differs: Unix uses permission bits, Windows uses file extensions
 - Path separators differ (/ vs \)
 - Path traversal validation needs to handle both separators
+- File locking is `flock` on Unix and `LockFileEx` on Windows, directories can be flushed on Unix and not on Windows, and mode bits are not enforced on Windows
 
 ```go
 import "github.com/grokify/oscompat/fs"
@@ -166,6 +167,21 @@ err := fs.WriteFile("file.txt", data, 0) // uses DefaultFilePerm (0644)
 
 // Write private file (owner-only)
 err := fs.WriteFilePrivate("secret.txt", data)
+
+// Exclusive advisory lock between processes; waits until ctx ends
+unlock, err := fs.Lock(ctx, "/path/to/state.lock")
+if err != nil {
+    return err // context error, or fs.ErrLockUnsupported on a platform with no locking
+}
+defer unlock()
+
+// Make a rename durable (a no-op where the platform offers no way to ask)
+err = fs.SyncDir("/path/to/dir")
+
+// Are mode bits meaningful here? Is a file owner-only?
+if fs.PermissionsEnforced() { /* false on Windows */ }
+err = fs.CheckPrivate(info) // nil on Windows; wraps fs.ErrNotPrivate elsewhere
+err = fs.ChmodPrivate(f)    // 0600 on an open file; a failure is ignored on Windows
 ```
 
 ### tsync

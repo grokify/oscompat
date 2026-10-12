@@ -44,7 +44,9 @@ rows.
   test expects a fixed string. `fs.NormalizePath` and `fs.OSPath` convert.
 - File mode bits other than read-only are not enforced on Windows. Do not
   assert `0600` after a write, and skip permission-denied tests with
-  `runtime.GOOS == "windows"`. `fs.IsExecutable` replaces mode checks.
+  `fs.PermissionsEnforced()` instead of a `runtime.GOOS` check, so the
+  condition is named once. `fs.CheckPrivate` is the owner-only assertion that
+  is correct on both. `fs.IsExecutable` replaces mode checks.
 - Home and config directories use `USERPROFILE` and `APPDATA`, not `HOME`.
   `testutil` and `paths` set and resolve both.
 
@@ -53,6 +55,18 @@ rows.
 Windows refuses to delete or rename an open file. Close files and databases
 before `t.TempDir` cleanup runs, using `t.Cleanup` in reverse order of
 opening, and check the `Close` error.
+
+This applies to a test that simulates a crash by returning early, for example
+from a hook between "temporary file created" and "renamed". A real crash closes
+the process's handles; the simulation must close the handle too, and leave the
+file, or Windows cannot remove it and the next step and the temporary directory
+cleanup both fail.
+
+## File locks and directory flushes
+
+Use `fs.Lock` rather than `syscall.Flock`, which does not exist on Windows, and
+`fs.SyncDir` rather than opening a directory to `Sync` it, which fails there.
+Both are tested against a second process in this module.
 
 ## Process and signals
 
