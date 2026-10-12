@@ -7,6 +7,22 @@
   "maintainers": ["grokify"],
   "releases": [
     {
+      "version": "v0.7.0",
+      "date": "2026-10-12",
+      "highlights": [
+        { "description": "File locking, directory sync and permission checks, so modules stop keeping platform-specific files of their own; and a test that enforces that oscompat has no dependencies" }
+      ],
+      "added": [
+        { "description": "`fs.Lock(ctx, path)` takes an exclusive advisory lock between processes (`flock` on Unix, `LockFileEx` on Windows), waits until the context ends, and releases when the process exits; `fs.ErrLockUnsupported` on a platform with no locking" },
+        { "description": "`fs.SyncDir(dir)` flushes a directory so a rename is durable, and does nothing where the platform offers no way to" },
+        { "description": "`fs.PermissionsEnforced()`, `fs.IsPrivate`, `fs.CheckPrivate` (wrapping `fs.ErrNotPrivate`) and `fs.ChmodPrivate` for owner-only checks that are correct on Windows" },
+        { "description": "A test that fails on any dependency, `go.sum` or import outside the standard library and the module, and package documentation stating the policy" }
+      ],
+      "changed": [
+        { "description": "Portable-tests guide: use `fs.PermissionsEnforced()` for mode assertions, close handles in simulated-crash tests, and use `fs.Lock` and `fs.SyncDir`" }
+      ]
+    },
+    {
       "version": "v0.6.0",
       "date": "2026-10-08",
       "highlights": [
