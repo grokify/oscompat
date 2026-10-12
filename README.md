@@ -267,6 +267,14 @@ here, using only the standard library.
 
 ## Guides
 
+The [documentation site](https://grokify.github.io/oscompat/) has a guide for
+each package:
+
+- [Getting started](docs/guides/getting-started.md)
+- [fs](docs/guides/fs.md): permissions, file locks, durable renames, paths
+- [process](docs/guides/process.md), [paths](docs/guides/paths.md),
+  [id](docs/guides/id.md), [tsync](docs/guides/tsync.md),
+  [localnet](docs/guides/localnet.md), [testutil](docs/guides/testutil.md)
 - [Writing tests that pass on Windows](docs/guides/portable-tests.md): wall-clock ties,
   path separators, open files, signals and line endings.
 

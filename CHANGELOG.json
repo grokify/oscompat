@@ -19,7 +19,8 @@
         { "description": "A test that fails on any dependency, `go.sum` or import outside the standard library and the module, and package documentation stating the policy" }
       ],
       "changed": [
-        { "description": "Portable-tests guide: use `fs.PermissionsEnforced()` for mode assertions, close handles in simulated-crash tests, and use `fs.Lock` and `fs.SyncDir`" }
+        { "description": "Portable-tests guide: use `fs.PermissionsEnforced()` for mode assertions, close handles in simulated-crash tests, and use `fs.Lock` and `fs.SyncDir`" },
+        { "description": "A MkDocs site with a guide for each package, and release notes for v0.7.0; the `paths` documentation now matches the directories the code returns for cache, runtime and macOS system configuration" }
       ]
     },
     {
