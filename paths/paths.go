@@ -75,7 +75,7 @@ func AppData(appName string) (string, error) {
 // The directory follows platform conventions:
 //   - Unix/Linux: ~/.cache/<appName>
 //   - macOS: ~/Library/Caches/<appName>
-//   - Windows: %LOCALAPPDATA%\<appName>\cache
+//   - Windows: %LOCALAPPDATA%\cache\<appName>
 func AppCache(appName string) (string, error) {
 	if appName == "" {
 		return "", ErrInvalidAppName
@@ -93,9 +93,9 @@ func AppCache(appName string) (string, error) {
 
 // AppRuntime returns the app-specific runtime directory, creating it if needed.
 // This is for runtime files like sockets and PIDs that should not persist across reboots.
-//   - Unix/Linux: $XDG_RUNTIME_DIR/<appName> or /tmp/<appName>-<uid>
-//   - macOS: ~/Library/Application Support/<appName>/run
-//   - Windows: %LOCALAPPDATA%\<appName>\run
+//   - Unix/Linux: $XDG_RUNTIME_DIR/<appName> or /tmp/runtime-<uid>/<appName>
+//   - macOS: ~/Library/Application Support/<appName>
+//   - Windows: %LOCALAPPDATA%\run\<appName>
 func AppRuntime(appName string) (string, error) {
 	if appName == "" {
 		return "", ErrInvalidAppName
@@ -113,7 +113,7 @@ func AppRuntime(appName string) (string, error) {
 
 // SystemAppConfig returns the system-wide app configuration directory.
 // This requires elevated privileges to write to.
-//   - Unix/Linux: /etc/<appName>
+//   - Unix/Linux and macOS: /etc/<appName>
 //   - Windows: %ProgramData%\<appName>
 func SystemAppConfig(appName string) (string, error) {
 	if appName == "" {
