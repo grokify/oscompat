@@ -42,6 +42,13 @@ rows.
 
 - Build paths with `filepath.Join`, and compare with `filepath.ToSlash` when a
   test expects a fixed string. `fs.NormalizePath` and `fs.OSPath` convert.
+- Do not check a path that came from a document or an archive with
+  `filepath.IsAbs`: it gives a different answer on each platform. Use
+  `fs.ValidatePath`, `fs.ValidateSlashPath` or `fs.IsAbsAny`, which give the
+  same answer everywhere.
+- Keep path test cases out of `runtime.GOOS` branches. A case that runs only
+  where it passes cannot show that another platform disagrees; run every case
+  everywhere and give each the answer it should have on all of them.
 - File mode bits other than read-only are not enforced on Windows. Do not
   assert `0600` after a write, and skip permission-denied tests with
   `fs.PermissionsEnforced()` instead of a `runtime.GOOS` check, so the
