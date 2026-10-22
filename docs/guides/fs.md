@@ -94,6 +94,7 @@ The complete write-temp, flush, rename, flush-directory sequence is shown in
 | `ValidateSlashPath(p)` | Like `ValidatePath`, for a path that uses forward slashes everywhere; also rejects backslashes, colons, and empty or `.` elements |
 | `IsAbsAny(p)` | Whether a path is absolute or rooted on any platform |
 | `SafeJoin(base, rel)` | Joins and refuses a result that escapes `base` |
+| `NormalizeLineEndings(s)`, `NormalizeLineEndingsBytes(b)` | Convert CRLF to LF; a lone CR is kept |
 | `NormalizePath(p)` | Converts to forward slashes, for storage |
 | `OSPath(p)` | Converts to the platform's separator |
 | `PathEqual`, `PathHasPrefix` | Compare with the platform's case rules |
