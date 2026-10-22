@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
     
     
       
@@ -31,7 +31,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
@@ -1087,15 +1087,15 @@
 
 
 <h1 id="process-signals-liveness-exec">process: signals, liveness, exec<a class="headerlink" href="#process-signals-liveness-exec" title="Permanent link">&para;</a></h1>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">import</span><span class="w"> </span><span class="s">"github.com/grokify/oscompat/process"</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">import</span><span class="w"> </span><span class="s">&quot;github.com/grokify/oscompat/process&quot;</span>
 </code></pre></div>
 <h2 id="stopping-a-process">Stopping a process<a class="headerlink" href="#stopping-a-process" title="Permanent link">&para;</a></h2>
 <p>Windows has no <code>SIGTERM</code>.</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">process</span><span class="p">.</span><span class="nx">Signal</span><span class="p">(</span><span class="nx">pid</span><span class="p">)</span><span class="w">         </span><span class="c1">// SIGTERM on Unix, Kill on Windows</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="nx">err</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">process</span><span class="p">.</span><span class="nx">FindAndSignal</span><span class="p">(</span><span class="nx">pid</span><span class="p">)</span><span class="w">   </span><span class="c1">// finds the process first</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="nx">err</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">process</span><span class="p">.</span><span class="nx">FindAndSignal</span><span class="p">(</span><span class="nx">pid</span><span class="p">)</span><span class="w">   </span><span class="c1">// finds the process first</span>
 </code></pre></div>
 <h2 id="detached-children">Detached children<a class="headerlink" href="#detached-children" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nx">cmd</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">exec</span><span class="p">.</span><span class="nx">Command</span><span class="p">(</span><span class="s">"myapp"</span><span class="p">,</span><span class="w"> </span><span class="s">"serve"</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nx">cmd</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">exec</span><span class="p">.</span><span class="nx">Command</span><span class="p">(</span><span class="s">&quot;myapp&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;serve&quot;</span><span class="p">)</span>
 <a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="nx">process</span><span class="p">.</span><span class="nx">SetDetached</span><span class="p">(</span><span class="nx">cmd</span><span class="p">)</span><span class="w"> </span><span class="c1">// its own process group on Unix</span>
 <a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">cmd</span><span class="p">.</span><span class="nx">Start</span><span class="p">()</span>
 </code></pre></div>
@@ -1108,7 +1108,7 @@ give the same PID to an unrelated process. Compare the start time.</p>
 <a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="k">switch</span><span class="w"> </span><span class="p">{</span>
 <a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="k">case</span><span class="w"> </span><span class="nx">errors</span><span class="p">.</span><span class="nx">Is</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span><span class="w"> </span><span class="nx">process</span><span class="p">.</span><span class="nx">ErrNotFound</span><span class="p">):</span>
 <a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">    </span><span class="c1">// gone</span>
-<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="k">case</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">started</span><span class="p">.</span><span class="nx">Sub</span><span class="p">(</span><span class="nx">rec</span><span class="p">.</span><span class="nx">StartedAt</span><span class="p">).</span><span class="nx">Abs</span><span class="p">()</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">2</span><span class="o">*</span><span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">:</span>
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="k">case</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">started</span><span class="p">.</span><span class="nx">Sub</span><span class="p">(</span><span class="nx">rec</span><span class="p">.</span><span class="nx">StartedAt</span><span class="p">).</span><span class="nx">Abs</span><span class="p">()</span><span class="w"> </span><span class="p">&gt;</span><span class="w"> </span><span class="mi">2</span><span class="o">*</span><span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">:</span>
 <a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="w">    </span><span class="c1">// the PID was reused by a different process</span>
 <a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="p">}</span>
 </code></pre></div>
@@ -1134,7 +1134,7 @@ give the same PID to an unrelated process. Compare the start time.</p>
 tolerance when comparing. On Windows it is the creation time. A PID of zero or
 less is rejected, because on Unix it addresses a process group.</p>
 <h2 id="replacing-the-current-process">Replacing the current process<a class="headerlink" href="#replacing-the-current-process" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">process</span><span class="p">.</span><span class="nx">Exec</span><span class="p">(</span><span class="nx">path</span><span class="p">,</span><span class="w"> </span><span class="p">[]</span><span class="kt">string</span><span class="p">{</span><span class="s">"claude"</span><span class="p">,</span><span class="w"> </span><span class="s">"--resume"</span><span class="p">,</span><span class="w"> </span><span class="nx">id</span><span class="p">})</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">process</span><span class="p">.</span><span class="nx">Exec</span><span class="p">(</span><span class="nx">path</span><span class="p">,</span><span class="w"> </span><span class="p">[]</span><span class="kt">string</span><span class="p">{</span><span class="s">&quot;claude&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;--resume&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">id</span><span class="p">})</span>
 </code></pre></div>
 <p>Unix replaces the process. Windows cannot, so it runs the program as a child with
 the terminal attached and exits with its status. It returns only on failure.</p>
@@ -1212,7 +1212,7 @@ the terminal attached and exits with its status. It returns only on failure.</p>
       <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "navigation.expand", "navigation.top", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
       
     
   </body>
