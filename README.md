@@ -146,6 +146,13 @@ isExec := fs.IsExecutableInfo(info, "/path/to/file")
 
 // Validate path for traversal attacks (handles both / and \)
 err := fs.ValidatePath("foo/../../../etc/passwd") // returns ErrPathTraversal
+err = fs.ValidatePath(`\\server\share\x`) // ErrAbsolutePath, on every platform
+
+// Validate a forward-slash path, such as one inside a repository
+err = fs.ValidateSlashPath(`docs\a.md`) // returns ErrInvalidPath
+
+// Absolute or rooted on any platform, unlike filepath.IsAbs
+fs.IsAbsAny("/etc/passwd") // true on Windows too
 
 // Normalize path to forward slashes (for storage)
 normalized := fs.NormalizePath(`foo\bar\baz`) // "foo/bar/baz"

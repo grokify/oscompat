@@ -90,12 +90,57 @@ The complete write-temp, flush, rename, flush-directory sequence is shown in
 
 | Function | Behavior |
 |----------|----------|
-| `ValidatePath(p)` | Rejects `..` traversal with either separator |
+| `ValidatePath(p)` | Rejects `..` traversal and absolute or rooted paths, with either separator |
+| `ValidateSlashPath(p)` | Like `ValidatePath`, for a path that uses forward slashes everywhere; also rejects backslashes, colons, and empty or `.` elements |
+| `IsAbsAny(p)` | Whether a path is absolute or rooted on any platform |
 | `SafeJoin(base, rel)` | Joins and refuses a result that escapes `base` |
 | `NormalizePath(p)` | Converts to forward slashes, for storage |
 | `OSPath(p)` | Converts to the platform's separator |
 | `PathEqual`, `PathHasPrefix` | Compare with the platform's case rules |
 | `IsExecutable(path)` | Mode bits on Unix; extension on Windows |
+
+### Paths from somewhere else
+
+A path read from a document, an archive, a configuration file or another
+system must stay inside its root whichever platform reads it. `filepath.IsAbs`
+cannot check that: it answers for the platform it runs on. Windows does not
+treat `/etc/passwd` as absolute, because it names a folder on the current
+drive, and Unix does not treat `\etc\passwd`, `\\server\share` or `C:x` as
+anything but a relative file name.
+
+`IsAbsAny` gives the same answer everywhere. It is true for a path that starts
+with `/` or `\`, including UNC paths, and for one that starts with a drive
+letter, including the drive-relative `C:x`.
+
+| Path | `filepath.IsAbs` on Unix | on Windows | `IsAbsAny` |
+|------|--------------------------|------------|------------|
+| `/etc/passwd` | true | false | true |
+| `\etc\passwd` | false | false | true |
+| `\\server\share` | false | true | true |
+| `C:\x`, `C:/x` | false | true | true |
+| `C:x` | false | false | true |
+| `docs/a.md` | false | false | false |
+
+Choose the check by what the path names:
+
+- **A file on this machine**, such as a command-line argument: `filepath.IsAbs`
+  and `filepath.Join` are right, because the platform's rules apply.
+- **A path relative to a root, from anywhere**, with either separator:
+  `ValidatePath`, then `SafeJoin` to read it.
+- **A path that uses forward slashes everywhere**, such as a path inside a
+  repository, an archive or a URL: `ValidateSlashPath`. It also refuses
+  backslashes, colons, and empty or `.` elements, so the path names the same
+  file on every platform.
+
+```go
+if err := fs.ValidateSlashPath(src.Path); err != nil {
+    return fmt.Errorf("source path %q: %w", src.Path, err)
+}
+data, err := os.ReadFile(filepath.Join(checkout, filepath.FromSlash(src.Path)))
+```
+
+The errors are `ErrEmptyPath`, `ErrAbsolutePath`, `ErrPathTraversal` and, from
+`ValidateSlashPath` only, `ErrInvalidPath`.
 
 ## Related
 

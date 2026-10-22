@@ -22,7 +22,8 @@ Cross-platform OS compatibility utilities for Go.
 
 - [x] **fs** - Filesystem utilities
   - `DefaultDirPerm()`, `DefaultFilePerm()`, `PrivateDirPerm()`, `PrivateFilePerm()`
-  - `ValidatePath()` - Path traversal attack prevention
+  - `ValidatePath()` - Path traversal attack prevention, the same on every platform (v0.8.0)
+  - `ValidateSlashPath()`, `IsAbsAny()` - Forward-slash paths and absolute paths on any platform (v0.8.0)
   - `NormalizePath()`, `OSPath()` - Path separator conversion
 
 - [x] **tsync** - Timestamp synchronization utilities

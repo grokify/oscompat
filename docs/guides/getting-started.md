@@ -16,6 +16,8 @@ install, because the module has no dependencies.
 | Refuse a file other users can read, or write one only the owner can | `fs.CheckPrivate`, `fs.WriteFilePrivate`, `fs.ChmodPrivate` |
 | Know whether mode bits mean anything here | `fs.PermissionsEnforced` |
 | Check a path from outside for `..` | `fs.ValidatePath`, `fs.SafeJoin` |
+| Check a forward-slash path, such as one inside a repository or an archive | `fs.ValidateSlashPath` |
+| Tell whether a path is absolute on any platform | `fs.IsAbsAny` |
 | Find a config, data, cache or runtime directory | `paths.AppConfig`, `paths.AppData`, `paths.AppCache`, `paths.AppRuntime` |
 | Stop a child process, or run one detached | `process.Signal`, `process.SetDetached` |
 | Tell whether a recorded PID is still the same process | `process.Exists`, `process.StartTime` |
