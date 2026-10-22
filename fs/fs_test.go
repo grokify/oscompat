@@ -31,22 +31,14 @@ func TestValidatePath(t *testing.T) {
 		// Backslash handling (Windows-style)
 		{"backslash path", `foo\bar\baz.txt`, nil},
 		{"backslash traversal", `foo\..\..\..\bar`, fs.ErrPathTraversal},
-	}
 
-	// Add platform-specific absolute path tests
-	if runtime.GOOS == "windows" {
-		tests = append(tests, struct {
-			name    string
-			path    string
-			wantErr error
-		}{"windows absolute", `C:\Windows\System32`, fs.ErrAbsolutePath})
-	} else {
-		// On Unix, paths starting with / are absolute
-		tests = append(tests, struct {
-			name    string
-			path    string
-			wantErr error
-		}{"absolute unix", "/etc/passwd", fs.ErrAbsolutePath})
+		// Absolute and rooted paths, the same on every platform
+		{"unix absolute", "/etc/passwd", fs.ErrAbsolutePath},
+		{"windows rooted", `\Windows\System32`, fs.ErrAbsolutePath},
+		{"unc", `\\server\share\file`, fs.ErrAbsolutePath},
+		{"drive with backslash", `C:\Windows\System32`, fs.ErrAbsolutePath},
+		{"drive with slash", "c:/windows", fs.ErrAbsolutePath},
+		{"drive relative", "C:file.txt", fs.ErrAbsolutePath},
 	}
 
 	for _, tt := range tests {
