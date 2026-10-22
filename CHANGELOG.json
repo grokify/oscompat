@@ -7,6 +7,21 @@
   "maintainers": ["grokify"],
   "releases": [
     {
+      "version": "v0.9.0",
+      "date": "2026-10-22",
+      "highlights": [
+        { "description": "Fixtures and golden files that compare equal on Windows, where git can check text files out with CRLF" }
+      ],
+      "added": [
+        { "description": "`testutil.ReadFileLF(t, path)` reads a text file and converts CRLF to LF" },
+        { "description": "`testutil.AssertGolden(t, path, got, update)` compares bytes with a golden file ignoring CRLF versus LF, and writes the file when `update` is set" },
+        { "description": "`fs.NormalizeLineEndingsBytes(b)` is `fs.NormalizeLineEndings` for bytes" }
+      ],
+      "documentation": [
+        { "description": "The testutil guide covers fixtures and golden files; the portable-tests guide recommends the helpers and `.gitattributes`; release notes for v0.9.0" }
+      ]
+    },
+    {
       "version": "v0.8.0",
       "date": "2026-10-22",
       "highlights": [

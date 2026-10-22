@@ -7,6 +7,7 @@
 package fs
 
 import (
+	"bytes"
 	"errors"
 	iofs "io/fs"
 	"os"
@@ -299,4 +300,10 @@ func PathHasPrefix(path, prefix string) bool {
 // or when files are checked out with CRLF line endings on Windows via git.
 func NormalizeLineEndings(s string) string {
 	return strings.ReplaceAll(s, "\r\n", "\n")
+}
+
+// NormalizeLineEndingsBytes is NormalizeLineEndings for bytes. It returns a new
+// slice and leaves its argument unchanged.
+func NormalizeLineEndingsBytes(b []byte) []byte {
+	return bytes.ReplaceAll(b, []byte("\r\n"), []byte("\n"))
 }

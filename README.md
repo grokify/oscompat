@@ -283,7 +283,8 @@ each package:
   [id](docs/guides/id.md), [tsync](docs/guides/tsync.md),
   [localnet](docs/guides/localnet.md), [testutil](docs/guides/testutil.md)
 - [Writing tests that pass on Windows](docs/guides/portable-tests.md): wall-clock ties,
-  path separators, open files, signals and line endings.
+  path separators, open files, signals and line endings; `testutil.ReadFileLF`
+  and `testutil.AssertGolden` compare fixtures whatever their line endings.
 
 ## Platform Support
 

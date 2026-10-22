@@ -82,8 +82,10 @@ There is no `SIGTERM`, and process groups work differently. Use
 
 ## Line endings
 
-Git may check out text files with CRLF. Compare golden files after
-normalizing `\r\n` to `\n`, or mark them `-text` in `.gitattributes`.
+Git may check out text files with CRLF. Read fixtures with
+`testutil.ReadFileLF` and compare golden files with `testutil.AssertGolden`,
+which ignore CRLF versus LF. In a repository that compares files byte for
+byte, also set `* text=auto eol=lf` in `.gitattributes`.
 
 ## Catching these before CI
 
