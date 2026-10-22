@@ -8,6 +8,7 @@ package fs
 
 import (
 	"errors"
+	iofs "io/fs"
 	"os"
 	"path"
 	"path/filepath"
@@ -25,6 +26,9 @@ var (
 	// ErrAbsolutePath is returned when an absolute path is provided where relative is expected.
 	ErrAbsolutePath = errors.New("oscompat/fs: absolute path not allowed")
 
+	// ErrInvalidPath is returned when a path is not a clean slash-separated
+	// relative path: it has a backslash, a colon, or an empty or "." element.
+	ErrInvalidPath = errors.New("oscompat/fs: not a clean slash-separated path")
 )
 
 // Default permission constants.
@@ -124,6 +128,31 @@ func ValidatePathStrict(p string) error {
 	}
 
 	return nil
+}
+
+// ValidateSlashPath checks a relative path that uses forward slashes on
+// every platform, such as a path inside a repository, an archive or a URL.
+// It is stricter than ValidatePath: besides traversal and absolute paths,
+// it refuses backslashes, colons, and empty or "." elements, so the path
+// names the same file everywhere. It returns ErrEmptyPath,
+// ErrAbsolutePath, ErrPathTraversal or ErrInvalidPath.
+func ValidateSlashPath(p string) error {
+	switch {
+	case p == "":
+		return ErrEmptyPath
+	case IsAbsAny(p):
+		return ErrAbsolutePath
+	case strings.ContainsAny(p, `\:`):
+		return ErrInvalidPath
+	case iofs.ValidPath(p) && p != ".":
+		return nil
+	}
+	for _, elem := range strings.Split(p, "/") {
+		if elem == ".." {
+			return ErrPathTraversal
+		}
+	}
+	return ErrInvalidPath
 }
 
 // NormalizePath converts OS-specific path separators to forward slashes.
