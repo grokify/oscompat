@@ -489,3 +489,60 @@ func TestNormalizeLineEndings(t *testing.T) {
 		})
 	}
 }
+
+func TestIsAbsAny(t *testing.T) {
+	tests := []struct {
+		path string
+		want bool
+	}{
+		{"", false},
+		{"file.txt", false},
+		{"./file.txt", false},
+		{"foo/bar", false},
+		{`foo\bar`, false},
+		{"1:x", false},
+		{"/etc/passwd", true},
+		{"/", true},
+		{`\Windows`, true},
+		{`\\server\share`, true},
+		{`\\?\C:\x`, true},
+		{`C:\x`, true},
+		{"C:/x", true},
+		{"c:x", true},
+	}
+	for _, tt := range tests {
+		if got := fs.IsAbsAny(tt.path); got != tt.want {
+			t.Errorf("IsAbsAny(%q) = %v, want %v", tt.path, got, tt.want)
+		}
+	}
+}
+
+func TestValidateSlashPath(t *testing.T) {
+	tests := []struct {
+		path    string
+		wantErr error
+	}{
+		{"file.txt", nil},
+		{"examples/walkthrough/agent_test.go", nil},
+		{"a..b.go", nil},
+		{".hidden/file", nil},
+		{"", fs.ErrEmptyPath},
+		{"/etc/passwd", fs.ErrAbsolutePath},
+		{`\etc\passwd`, fs.ErrAbsolutePath},
+		{"C:/x.go", fs.ErrAbsolutePath},
+		{"..", fs.ErrPathTraversal},
+		{"../x.go", fs.ErrPathTraversal},
+		{"a/../../x.go", fs.ErrPathTraversal},
+		{`examples\x.go`, fs.ErrInvalidPath},
+		{"ab:c.go", fs.ErrInvalidPath},
+		{".", fs.ErrInvalidPath},
+		{"./x.go", fs.ErrInvalidPath},
+		{"a//b.go", fs.ErrInvalidPath},
+		{"a/", fs.ErrInvalidPath},
+	}
+	for _, tt := range tests {
+		if err := fs.ValidateSlashPath(tt.path); err != tt.wantErr {
+			t.Errorf("ValidateSlashPath(%q) = %v, want %v", tt.path, err, tt.wantErr)
+		}
+	}
+}
