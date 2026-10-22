@@ -24,6 +24,7 @@ var (
 
 	// ErrAbsolutePath is returned when an absolute path is provided where relative is expected.
 	ErrAbsolutePath = errors.New("oscompat/fs: absolute path not allowed")
+
 )
 
 // Default permission constants.
@@ -46,20 +47,45 @@ const (
 	ExecutablePerm os.FileMode = 0755
 )
 
+// IsAbsAny reports whether p is absolute or rooted on any operating system,
+// whichever one this code runs on: it starts with a slash or a backslash
+// (a Unix absolute path, a Windows rooted path, or a UNC path such as
+// \\server\share), or with a drive letter (C:\x, C:/x, or the
+// drive-relative C:x).
+//
+// Use it for paths that come from documents, archives, configuration or
+// other systems, which must stay inside a root on every platform. For a
+// path on this machine, filepath.IsAbs answers for this platform; on
+// Windows it does not treat /etc as absolute, because it names a folder on
+// the current drive.
+func IsAbsAny(p string) bool {
+	if p == "" {
+		return false
+	}
+	if p[0] == '/' || p[0] == '\\' {
+		return true
+	}
+	return len(p) >= 2 && p[1] == ':' && isASCIILetter(p[0])
+}
+
+func isASCIILetter(c byte) bool {
+	return ('a' <= c && c <= 'z') || ('A' <= c && c <= 'Z')
+}
+
 // ValidatePath checks a path for directory traversal attacks.
 // It returns an error if the path:
 //   - Is empty
 //   - Contains ".." that would escape the root
-//   - Is absolute (starts with / or drive letter on Windows)
+//   - Is absolute or rooted on any platform (see IsAbsAny)
 //
-// This function handles both forward slashes and backslashes for Windows compatibility.
+// It accepts both forward slashes and backslashes as separators, and gives
+// the same answer on every platform.
 func ValidatePath(p string) error {
 	if p == "" {
 		return ErrEmptyPath
 	}
 
-	// Check for absolute paths (both Unix and Windows style)
-	if filepath.IsAbs(p) || (len(p) >= 2 && p[1] == ':') {
+	if IsAbsAny(p) {
 		return ErrAbsolutePath
 	}
 
