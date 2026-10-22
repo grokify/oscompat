@@ -7,6 +7,26 @@
   "maintainers": ["grokify"],
   "releases": [
     {
+      "version": "v0.8.0",
+      "date": "2026-10-22",
+      "highlights": [
+        { "description": "Path checks that give the same answer on every platform: `fs.ValidatePath` no longer depends on `filepath.IsAbs`, `fs.IsAbsAny` reports a path that is absolute or rooted anywhere, and `fs.ValidateSlashPath` checks paths that use forward slashes everywhere" }
+      ],
+      "added": [
+        { "description": "`fs.IsAbsAny(p)` reports whether a path is absolute or rooted on any platform: a leading `/` or `\\`, a UNC path, or a drive letter, including the drive-relative `C:x`", "commit": "5acd8e6" },
+        { "description": "`fs.ValidateSlashPath(p)` checks a relative path that uses forward slashes on every platform, such as one inside a repository, an archive or a URL; it also refuses backslashes, colons, and empty or `.` elements, reported as the new `fs.ErrInvalidPath`", "commit": "5baa804" }
+      ],
+      "changed": [
+        { "description": "The path tests run every case on every platform instead of keeping absolute-path cases to the platform where each passed", "commit": "e5e7164" }
+      ],
+      "fixed": [
+        { "description": "`fs.ValidatePath` gives the same answer on every platform: it rejected `/etc/passwd` only off Windows, and accepted `\\etc\\passwd` and `\\\\server\\share` off Windows", "commit": "5acd8e6" }
+      ],
+      "documentation": [
+        { "description": "The fs guide explains which path check to use for a path on this machine, a path from elsewhere, and a forward-slash path; the portable-tests and getting-started guides, README and roadmap list the new functions; release notes for v0.8.0" }
+      ]
+    },
+    {
       "version": "v0.7.0",
       "date": "2026-10-12",
       "highlights": [

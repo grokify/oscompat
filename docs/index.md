@@ -46,5 +46,5 @@ All packages are tested on Linux, macOS and Windows.
 
 ## Releases
 
-See the [release notes](releases/v0.7.0.md) and the
+See the [release notes](releases/v0.8.0.md) and the
 [changelog](https://github.com/grokify/oscompat/blob/main/CHANGELOG.md).
