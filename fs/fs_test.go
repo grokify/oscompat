@@ -546,3 +546,14 @@ func TestValidateSlashPath(t *testing.T) {
 		}
 	}
 }
+
+func TestNormalizeLineEndingsBytes(t *testing.T) {
+	in := []byte("a\r\nb\nc\rd\r\n")
+	got := fs.NormalizeLineEndingsBytes(in)
+	if string(got) != "a\nb\nc\rd\n" {
+		t.Fatalf("got %q", got)
+	}
+	if string(in) != "a\r\nb\nc\rd\r\n" {
+		t.Fatalf("argument changed: %q", in)
+	}
+}
