@@ -7,6 +7,36 @@
   "maintainers": ["grokify"],
   "releases": [
     {
+      "version": "v0.10.0",
+      "date": "2026-10-30",
+      "highlights": [
+        {
+          "description": "Confine a caller's path to a directory on every platform, following symbolic links"
+        }
+      ],
+      "added": [
+        {
+          "description": "`fs.ResolveInRoot(root, path)` returns a real path inside `root`, or an error wrapping `fs.ErrOutsideRoot` for `..`, a NUL, a rooted or drive path, or a link that leads outside"
+        },
+        {
+          "description": "`fs.RealDir(dir)` returns an absolute directory with symbolic links resolved"
+        },
+        {
+          "description": "`fs.ErrOutsideRoot`"
+        }
+      ],
+      "tests": [
+        {
+          "description": "`fs`: cover root confinement, drive and UNC paths, and links that leave the root"
+        }
+      ],
+      "documentation": [
+        {
+          "description": "The fs guide explains `ResolveInRoot`; the portable-tests guide shows how to run a command in a test without building a binary; release notes for v0.10.0"
+        }
+      ]
+    },
+    {
       "version": "v0.9.0",
       "date": "2026-10-22",
       "highlights": [
