@@ -128,6 +128,8 @@ Choose the check by what the path names:
   and `filepath.Join` are right, because the platform's rules apply.
 - **A path relative to a root, from anywhere**, with either separator:
   `ValidatePath`, then `SafeJoin` to read it.
+- **A path from a caller that may also follow links, such as a tool argument:**
+  `ResolveInRoot` (see below).
 - **A path that uses forward slashes everywhere**, such as a path inside a
   repository, an archive or a URL: `ValidateSlashPath`. It also refuses
   backslashes, colons, and empty or `.` elements, so the path names the same
@@ -142,6 +144,29 @@ data, err := os.ReadFile(filepath.Join(checkout, filepath.FromSlash(src.Path)))
 
 The errors are `ErrEmptyPath`, `ErrAbsolutePath`, `ErrPathTraversal` and, from
 `ValidateSlashPath` only, `ErrInvalidPath`.
+
+### Confining a caller's path to a directory
+
+`ResolveInRoot(root, p)` turns a path supplied by a caller, such as an MCP tool
+argument or an upload path, into a real path inside `root`. It returns an error
+wrapping `ErrOutsideRoot` for an empty path, a NUL, a `..` element with either
+separator, a rooted or drive-qualified path that is not inside the root, and
+any path that leads outside once symbolic links are followed. The file need not
+exist, so a caller can create one in place.
+
+```go
+root, err := fs.RealDir(uploadRoot) // once, at start-up
+if err != nil {
+    return err
+}
+path, err := fs.ResolveInRoot(root, req.Path)
+if errors.Is(err, fs.ErrOutsideRoot) {
+    return fmt.Errorf("upload path: %w", err)
+}
+```
+
+The check runs at the moment of the call. A link created afterwards is not
+seen, so open the returned path promptly and do not treat it as a lock.
 
 ## Related
 
