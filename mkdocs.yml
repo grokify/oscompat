@@ -52,6 +52,7 @@ nav:
       - testutil: guides/testutil.md
       - Writing tests that pass on Windows: guides/portable-tests.md
   - Releases:
+      - v0.10.0: releases/v0.10.0.md
       - v0.9.0: releases/v0.9.0.md
       - v0.8.0: releases/v0.8.0.md
       - v0.7.0: releases/v0.7.0.md

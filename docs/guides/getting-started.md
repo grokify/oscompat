@@ -18,6 +18,7 @@ install, because the module has no dependencies.
 | Check a path from outside for `..` | `fs.ValidatePath`, `fs.SafeJoin` |
 | Check a forward-slash path, such as one inside a repository or an archive | `fs.ValidateSlashPath` |
 | Tell whether a path is absolute on any platform | `fs.IsAbsAny` |
+| Confine a caller's path to a directory, following links | `fs.RealDir`, `fs.ResolveInRoot` |
 | Find a config, data, cache or runtime directory | `paths.AppConfig`, `paths.AppData`, `paths.AppCache`, `paths.AppRuntime` |
 | Stop a child process, or run one detached | `process.Signal`, `process.SetDetached` |
 | Tell whether a recorded PID is still the same process | `process.Exists`, `process.StartTime` |
