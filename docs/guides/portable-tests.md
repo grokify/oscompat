@@ -38,6 +38,29 @@ rows.
 4. Never `time.Sleep` for a few milliseconds to force a different timestamp.
    It lowers the odds without removing the failure.
 
+## Running your program in a test
+
+To exercise a command over its real standard input and output, run the test
+binary itself as the command instead of building one with `go build`. There is
+no build step and no `.exe` suffix to add on Windows.
+
+```go
+const runAsCommand = "MYAPP_RUN_AS_COMMAND"
+
+func TestMain(m *testing.M) {
+    if os.Getenv(runAsCommand) == "1" {
+        os.Exit(run(os.Args[1:], os.Stdin, os.Stdout, os.Stderr))
+    }
+    os.Exit(m.Run())
+}
+
+func TestServesOverStdio(t *testing.T) {
+    cmd := exec.Command(os.Args[0], "serve")
+    cmd.Env = append(os.Environ(), runAsCommand+"=1")
+    // ... connect to cmd's stdin and stdout
+}
+```
+
 ## Path separators and permissions
 
 - Build paths with `filepath.Join`, and compare with `filepath.ToSlash` when a
@@ -45,7 +68,8 @@ rows.
 - Do not check a path that came from a document or an archive with
   `filepath.IsAbs`: it gives a different answer on each platform. Use
   `fs.ValidatePath`, `fs.ValidateSlashPath` or `fs.IsAbsAny`, which give the
-  same answer everywhere.
+  same answer everywhere. To confine a caller's path to a directory, including
+  links that lead out of it, use `fs.ResolveInRoot`.
 - Keep path test cases out of `runtime.GOOS` branches. A case that runs only
   where it passes cannot show that another platform disagrees; run every case
   everywhere and give each the answer it should have on all of them.

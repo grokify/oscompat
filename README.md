@@ -163,6 +163,10 @@ osPath := fs.OSPath("foo/bar/baz") // "foo\bar\baz" on Windows
 // Safe path joining with traversal protection
 fullPath, err := fs.SafeJoin("/base", "relative/path")
 
+// Confine a caller's path to a directory, refusing links that leave it
+root, err := fs.RealDir("/srv/uploads")
+path, err := fs.ResolveInRoot(root, req.Path) // ErrOutsideRoot if it escapes
+
 // Create directory with default permissions
 err := fs.MkdirAll("/path/to/dir", 0) // uses DefaultDirPerm (0755)
 
