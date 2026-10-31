@@ -7,6 +7,39 @@
   "maintainers": ["grokify"],
   "releases": [
     {
+      "version": "v0.11.0",
+      "date": "2026-10-31",
+      "highlights": [
+        {
+          "description": "Open a file a caller named inside a directory with the open itself confined, check the handle and cap the read, so a symbolic link that leads out is refused at the moment of the open and a file that grows cannot exceed its limit"
+        }
+      ],
+      "added": [
+        {
+          "description": "`fs.OpenRegularInRoot(root, name, maxBytes)` opens as `OpenInRoot` does and returns the file only if the open handle is a regular file of at most `maxBytes`, closing it otherwise; errors wrap `fs.ErrOutsideRoot`, `os.ErrNotExist`, `fs.ErrNotRegular` or `fs.ErrTooLarge`"
+        },
+        {
+          "description": "`fs.CapReader(r, maxBytes)` is `io.LimitReader` that reports `fs.ErrTooLarge` when the stream is longer than the limit, instead of truncating it silently"
+        },
+        {
+          "description": "`fs.ErrNotRegular` and `fs.ErrTooLarge`"
+        },
+        {
+          "description": "`fs.OpenInRoot(root, name)` checks the name as `ResolveInRoot` does and opens it through `os.Root`, returning an error wrapping `fs.ErrOutsideRoot` for `..`, a NUL, a rooted or drive name, or a link that leads out; a link with an absolute target is refused even when it points back into the root"
+        }
+      ],
+      "tests": [
+        {
+          "description": "`fs`: cover the refused names, links out of the root in a file and in a directory element, relative and absolute links inside the root, missing files and roots, and a handle that keeps its file after the path is replaced; cover `OpenRegularInRoot` and `CapReader` at and over the limit in every read size, and a file that grows after it is opened"
+        }
+      ],
+      "documentation": [
+        {
+          "description": "The fs guide explains `OpenInRoot`, `OpenRegularInRoot` and `CapReader` and when to use them instead of `ResolveInRoot`; the README, the getting-started table and the portable-tests guide list them; release notes for v0.11.0"
+        }
+      ]
+    },
+    {
       "version": "v0.10.0",
       "date": "2026-10-30",
       "highlights": [
