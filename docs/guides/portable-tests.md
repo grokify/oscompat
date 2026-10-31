@@ -69,7 +69,8 @@ func TestServesOverStdio(t *testing.T) {
   `filepath.IsAbs`: it gives a different answer on each platform. Use
   `fs.ValidatePath`, `fs.ValidateSlashPath` or `fs.IsAbsAny`, which give the
   same answer everywhere. To confine a caller's path to a directory, including
-  links that lead out of it, use `fs.ResolveInRoot`.
+  links that lead out of it, use `fs.ResolveInRoot`, or `fs.OpenInRoot` to read
+  the file, with `fs.OpenRegularInRoot` and `fs.CapReader` to bound it.
 - Keep path test cases out of `runtime.GOOS` branches. A case that runs only
   where it passes cannot show that another platform disagrees; run every case
   everywhere and give each the answer it should have on all of them.

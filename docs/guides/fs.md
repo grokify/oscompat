@@ -129,7 +129,7 @@ Choose the check by what the path names:
 - **A path relative to a root, from anywhere**, with either separator:
   `ValidatePath`, then `SafeJoin` to read it.
 - **A path from a caller that may also follow links, such as a tool argument:**
-  `ResolveInRoot` (see below).
+  `ResolveInRoot` to get a path, or `OpenInRoot` to read the file (see below).
 - **A path that uses forward slashes everywhere**, such as a path inside a
   repository, an archive or a URL: `ValidateSlashPath`. It also refuses
   backslashes, colons, and empty or `.` elements, so the path names the same
@@ -166,7 +166,70 @@ if errors.Is(err, fs.ErrOutsideRoot) {
 ```
 
 The check runs at the moment of the call. A link created afterwards is not
-seen, so open the returned path promptly and do not treat it as a lock.
+seen, so open the returned path promptly and do not treat it as a lock. If the
+next step is to read the file, use `OpenInRoot` instead.
+
+### Opening a file inside a directory
+
+`OpenInRoot(root, name)` checks the name as `ResolveInRoot` does and then opens
+it through `os.Root`, so the operating system refuses a symbolic link that leads
+out of the root at the moment of the open. There is no gap between the check and
+the open for a link to be swapped into, and the returned `*os.File` stays bound
+to the file that was opened, whatever happens to the path afterwards.
+
+```go
+root, err := fs.RealDir(uploadRoot) // once, at start-up
+if err != nil {
+    return err
+}
+f, err := fs.OpenInRoot(root, req.Path)
+if errors.Is(err, fs.ErrOutsideRoot) {
+    return fmt.Errorf("upload path: %w", err)
+}
+if err != nil {
+    return err // a missing file satisfies errors.Is(err, os.ErrNotExist)
+}
+defer f.Close()
+```
+
+To read the file, and not only open it, use the pair that checks the handle and
+caps the read:
+
+```go
+f, err := fs.OpenRegularInRoot(root, req.Path, maxBytes)
+if err != nil {
+    // fs.ErrOutsideRoot, os.ErrNotExist, fs.ErrNotRegular or fs.ErrTooLarge,
+    // each testable with errors.Is
+    return fmt.Errorf("upload path: %w", err)
+}
+defer f.Close()
+
+body := fs.CapReader(f, maxBytes) // a file that grows after the check
+data, err := io.ReadAll(body)      // ends with fs.ErrTooLarge
+```
+
+`OpenRegularInRoot` opens as `OpenInRoot` does and returns the file only if the
+handle it holds is a regular file of at most `maxBytes`. The check is made on
+the open handle, so it describes the file you will read, and the file is closed
+for you when it fails. `CapReader` is `io.LimitReader` that reports
+`ErrTooLarge` when the stream is longer than the limit, instead of stopping
+silently, so an oversized file cannot pass as a complete, shorter one. Bytes
+within the limit are delivered before the error. Hand the capped reader to
+anything that takes an `io.Reader`, such as an upload.
+
+Use `OpenInRoot` when you will read the file, and `ResolveInRoot` when you need a
+path: to create a file that does not exist yet, or to hand to code that opens
+paths itself. Three things to know:
+
+- **Links.** A link whose target is relative and stays inside the root is
+  followed. A link whose target is an absolute path is refused with
+  `ErrOutsideRoot`, even if the target is inside the root, because `os.Root`
+  does not follow absolute links. `ResolveInRoot` accepts such a link.
+- **Absolute names.** One is accepted only if it is spelled inside `root`, with
+  `root` written the same way. Pass the result of `RealDir` as `root`.
+- **The read.** The open is confined, but the size of the file can still change
+  while you read it. That is why `OpenRegularInRoot` is paired with `CapReader`:
+  one checks the file you hold, the other enforces the limit on what is read.
 
 ## Related
 
