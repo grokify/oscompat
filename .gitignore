@@ -21,3 +21,6 @@ coverage.html
 # OS
 .DS_Store
 Thumbs.db
+
+# MkDocs build output
+/site/
