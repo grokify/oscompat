@@ -167,6 +167,13 @@ fullPath, err := fs.SafeJoin("/base", "relative/path")
 root, err := fs.RealDir("/srv/uploads")
 path, err := fs.ResolveInRoot(root, req.Path) // ErrOutsideRoot if it escapes
 
+// Open a file inside a directory, with the open itself confined by os.Root
+f, err := fs.OpenInRoot(root, req.Path) // ErrOutsideRoot if it escapes
+
+// Read it safely: a regular file within a limit, and the read capped too
+f, err := fs.OpenRegularInRoot(root, req.Path, maxBytes) // ErrNotRegular, ErrTooLarge
+body := fs.CapReader(f, maxBytes)                       // ErrTooLarge if it grows
+
 // Create directory with default permissions
 err := fs.MkdirAll("/path/to/dir", 0) // uses DefaultDirPerm (0755)
 
