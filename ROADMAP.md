@@ -14,6 +14,7 @@ Cross-platform OS compatibility utilities for Go.
   - `SetDetached(cmd)` - Process group on Unix, CREATE_NEW_PROCESS_GROUP on Windows
   - `Signal(pid)` - SIGTERM on Unix, Kill on Windows
   - `FindAndSignal(pid)` - Combined find and signal
+  - `OpenDefault(target)` - Open a URL or file with the default application: open, xdg-open, or rundll32 (v0.13.0)
 
 - [x] **paths** - Configuration directory resolution
   - `UserConfig()`, `UserData()`, `UserCache()` - XDG/macOS Library/Windows AppData
@@ -42,6 +43,7 @@ Cross-platform OS compatibility utilities for Go.
 |---------|---------------|--------|
 | omniretrieve | id | Integrated |
 | omnivault | process | Integrated |
+| visionstudio | fs, process, testutil | Integrated |
 | vaultguard | paths | Integrated |
 | omnistorage | tsync | Integrated |
 | omnicredential | fs | Integrated |
