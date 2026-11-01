@@ -44,6 +44,7 @@ Cross-platform OS compatibility utilities for Go.
 | omnivault | process | Integrated |
 | vaultguard | paths | Integrated |
 | omnistorage | tsync | Integrated |
+| omnicredential | fs | Integrated |
 | omniproxy | process | Planned |
 | godaemonkit | paths | Planned |
 | mogo | fs, tsync | Planned |
