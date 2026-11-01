@@ -180,6 +180,12 @@ err := fs.MkdirAll("/path/to/dir", 0) // uses DefaultDirPerm (0755)
 // Create private directory (owner-only)
 err := fs.MkdirAllPrivate("/path/to/private")
 
+// Replace a file so readers see the old one or the new one, never part of
+// either: a temporary file, a flush, the mode where it is enforced, a
+// rename and a flush of the directory where the platform allows
+err := fs.WriteFileAtomic("/path/to/registry.json", data, 0) // DefaultFilePerm
+err = fs.WriteFileAtomicPrivate("/path/to/state.json", data) // 0600
+
 // Write file with default permissions
 err := fs.WriteFile("file.txt", data, 0) // uses DefaultFilePerm (0644)
 
