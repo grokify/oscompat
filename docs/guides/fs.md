@@ -18,6 +18,7 @@ file, and tests that assert `0600`, are wrong there unless they ask first.
 | `CheckPrivate(info)` | An error matching `ErrNotPrivate` that names the mode; nil where modes are not enforced |
 | `ChmodPrivate(f)` | Restricts an open file to its owner (`0600`); a failure is ignored where modes are not enforced |
 | `WriteFilePrivate`, `MkdirAllPrivate` | Create a file or directory for the owner only |
+| `WriteFileAtomic`, `WriteFileAtomicPrivate` | Replace a file atomically; see [below](#replacing-a-file-atomically) |
 | `PrivateFilePerm`, `PrivateDirPerm`, `DefaultFilePerm`, `DefaultDirPerm` | The usual modes as constants |
 
 Refusing a file other users can read:
@@ -83,7 +84,30 @@ does nothing and returns nil: a rename there is atomic and nothing stronger is
 available. You get the strongest guarantee the platform offers without a
 platform check.
 
-The complete write-temp, flush, rename, flush-directory sequence is shown in
+## Replacing a file atomically
+
+```go
+if err := fs.WriteFileAtomic(path, data, 0); err != nil { // DefaultFilePerm
+    return err
+}
+if err := fs.WriteFileAtomicPrivate(statePath, state); err != nil { // 0600
+    return err
+}
+```
+
+`WriteFileAtomic` writes a temporary file in the same directory, flushes it,
+sets the mode, renames it over the target and flushes the directory with
+`SyncDir`. A reader, or a crash, sees the whole old file or the whole new one,
+never a partial write. On error the temporary file is removed and the target is
+unchanged.
+
+A `perm` of 0 means `DefaultFilePerm`. The mode is set only where
+`PermissionsEnforced` is true; elsewhere a failure to set it is ignored, as it
+could not have been relied on. On Windows the rename fails if another process
+holds the target open.
+
+It does not stop two processes replacing the same file at once: the last
+rename wins. Hold `Lock` around it when that matters, as in
 [Getting started](getting-started.md#a-first-example).
 
 ## Paths

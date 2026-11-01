@@ -12,6 +12,7 @@ install, because the module has no dependencies.
 | You need to | Use |
 |-------------|-----|
 | Keep two processes from writing a file at once | `fs.Lock` |
+| Replace a file so a reader or a crash sees the old one or the new one | `fs.WriteFileAtomic`, `fs.WriteFileAtomicPrivate` |
 | Make a rename durable | `fs.SyncDir` |
 | Refuse a file other users can read, or write one only the owner can | `fs.CheckPrivate`, `fs.WriteFilePrivate`, `fs.ChmodPrivate` |
 | Know whether mode bits mean anything here | `fs.PermissionsEnforced` |
@@ -37,8 +38,6 @@ processes do not do it at once:
 ```go
 import (
     "context"
-    "os"
-    "path/filepath"
 
     "github.com/grokify/oscompat/fs"
 )
@@ -50,29 +49,8 @@ func replace(ctx context.Context, path string, data []byte) error {
     }
     defer unlock()
 
-    dir := filepath.Dir(path)
-    tmp, err := os.CreateTemp(dir, filepath.Base(path)+".tmp-*")
-    if err != nil {
-        return err
-    }
-    defer os.Remove(tmp.Name()) // a no-op once renamed
-
-    if err := fs.ChmodPrivate(tmp); err != nil {
-        return err
-    }
-    if _, err := tmp.Write(data); err != nil {
-        return err
-    }
-    if err := tmp.Sync(); err != nil {
-        return err
-    }
-    if err := tmp.Close(); err != nil {
-        return err
-    }
-    if err := os.Rename(tmp.Name(), path); err != nil {
-        return err
-    }
-    return fs.SyncDir(dir)
+    // Temporary file, flush, owner-only mode, rename, flush the directory.
+    return fs.WriteFileAtomicPrivate(path, data)
 }
 ```
 
