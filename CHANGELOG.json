@@ -5,6 +5,11 @@
   "versioning": "semver",
   "commitConvention": "conventional",
   "maintainers": ["grokify"],
+  "unreleased": {
+    "added": [
+      {"description": "`process.OpenDefault` opens a URL or a file with the user's default application: `open` on macOS, `xdg-open` on Linux and the BSDs, and the URL protocol handler of `rundll32` on Windows. It refuses an empty target and one starting with `-`"}
+    ]
+  },
   "releases": [
     {
       "version": "v0.12.0",

@@ -63,6 +63,7 @@ Cross-platform process management utilities.
 
 - Unix has `SIGTERM` for graceful termination; Windows does not
 - Unix uses `Setpgid` for process group management; Windows does not
+- Opening a URL or file in the default application takes a different program on each platform
 
 ```go
 import "github.com/grokify/oscompat/process"
@@ -87,6 +88,10 @@ if err == nil && started.Sub(recorded).Abs() > 2*time.Second {
 // Hand the terminal to another program: replaces this process on Unix, runs
 // it as a child and exits with its status on Windows. Returns only on failure.
 err = process.Exec(path, []string{"claude", "--resume", id})
+
+// Open a URL or a file with the user's default application:
+// open on macOS, xdg-open on Linux and the BSDs, rundll32 on Windows.
+err = process.OpenDefault("http://localhost:9401")
 ```
 
 ### paths

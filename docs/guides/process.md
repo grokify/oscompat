@@ -55,3 +55,22 @@ err := process.Exec(path, []string{"claude", "--resume", id})
 
 Unix replaces the process. Windows cannot, so it runs the program as a child with
 the terminal attached and exits with its status. It returns only on failure.
+
+## Opening a URL or a file
+
+Each platform opens things in the user's default application with a different
+program.
+
+```go
+err := process.OpenDefault("http://localhost:9401") // the default browser
+err = process.OpenDefault("/tmp/report.html")        // the program registered for .html
+```
+
+It runs `open` on macOS, `xdg-open` on Linux and the BSDs, and the URL protocol
+handler of `rundll32` on Windows, which avoids `cmd.exe` and its handling of
+characters such as `&`. The target is passed as one argument. It returns once the
+opener has started and does not wait for the application.
+
+An empty target, or one starting with `-` that the opener could read as an
+option, is refused. Name a file that starts with `-` as `./-name`.
+
