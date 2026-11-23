@@ -306,7 +306,9 @@ each package:
   [localnet](docs/guides/localnet.md), [testutil](docs/guides/testutil.md)
 - [Writing tests that pass on Windows](docs/guides/portable-tests.md): wall-clock ties,
   path separators, open files, signals and line endings; `testutil.ReadFileLF`
-  and `testutil.AssertGolden` compare fixtures whatever their line endings.
+  and `testutil.AssertGolden` compare fixtures whatever their line endings;
+  `testutil.RequirePOSIX` skips a test that needs shell scripts or execute
+  bits, with the reason.
 
 ## Platform Support
 

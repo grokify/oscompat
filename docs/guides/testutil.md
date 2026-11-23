@@ -56,4 +56,21 @@ writes the file instead when `update` is set. Produce `got` with LF endings.
 For a string or bytes already in memory, use `fs.NormalizeLineEndings` or
 `fs.NormalizeLineEndingsBytes`.
 
+## Tests that need a POSIX platform
+
+Some tests cannot mean anything on Windows: they run shell scripts as fake
+programs, check execute bits, or fake a Linux host with slash-rooted paths.
+Skip them there with the reason, rather than branching on `runtime.GOOS`:
+
+```go
+func TestDeployRunsTheHooks(t *testing.T) {
+    testutil.RequirePOSIX(t, "the hooks are shell scripts run as programs")
+    // ...
+}
+```
+
+`testutil.POSIX()` reports the same for a test that only adjusts an
+assertion. Keep testing what is cross-platform without it; for file modes
+alone, `fs.PermissionsEnforced` says whether they are kept.
+
 See also [Writing tests that pass on Windows](portable-tests.md).
