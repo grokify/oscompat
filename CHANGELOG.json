@@ -4,8 +4,29 @@
   "repository": "https://github.com/grokify/oscompat",
   "versioning": "semver",
   "commitConvention": "conventional",
-  "maintainers": ["grokify"],
+  "maintainers": [
+    "grokify"
+  ],
   "releases": [
+    {
+      "version": "v0.14.0",
+      "date": "2026-11-23",
+      "highlights": [
+        {
+          "description": "`testutil.RequirePOSIX` skips a test that needs a POSIX platform, with the reason, so callers need no `runtime.GOOS` check"
+        }
+      ],
+      "added": [
+        {
+          "description": "`testutil.POSIX` reports whether the platform runs #! scripts as programs, keeps execute bits and treats a /-rooted path as absolute; `testutil.RequirePOSIX(t, why)` skips the test where it does not, which is Windows"
+        }
+      ],
+      "documentation": [
+        {
+          "description": "The testutil guide's section on tests that need a POSIX platform"
+        }
+      ]
+    },
     {
       "version": "v0.13.0",
       "date": "2026-11-01",
@@ -124,137 +145,258 @@
       "version": "v0.9.0",
       "date": "2026-10-22",
       "highlights": [
-        { "description": "Fixtures and golden files that compare equal on Windows, where git can check text files out with CRLF" }
+        {
+          "description": "Fixtures and golden files that compare equal on Windows, where git can check text files out with CRLF"
+        }
       ],
       "added": [
-        { "description": "`testutil.ReadFileLF(t, path)` reads a text file and converts CRLF to LF" },
-        { "description": "`testutil.AssertGolden(t, path, got, update)` compares bytes with a golden file ignoring CRLF versus LF, and writes the file when `update` is set" },
-        { "description": "`fs.NormalizeLineEndingsBytes(b)` is `fs.NormalizeLineEndings` for bytes" }
+        {
+          "description": "`testutil.ReadFileLF(t, path)` reads a text file and converts CRLF to LF"
+        },
+        {
+          "description": "`testutil.AssertGolden(t, path, got, update)` compares bytes with a golden file ignoring CRLF versus LF, and writes the file when `update` is set"
+        },
+        {
+          "description": "`fs.NormalizeLineEndingsBytes(b)` is `fs.NormalizeLineEndings` for bytes"
+        }
       ],
       "documentation": [
-        { "description": "The testutil guide covers fixtures and golden files; the portable-tests guide recommends the helpers and `.gitattributes`; release notes for v0.9.0" }
+        {
+          "description": "The testutil guide covers fixtures and golden files; the portable-tests guide recommends the helpers and `.gitattributes`; release notes for v0.9.0"
+        }
       ]
     },
     {
       "version": "v0.8.0",
       "date": "2026-10-22",
       "highlights": [
-        { "description": "Path checks that give the same answer on every platform: `fs.ValidatePath` no longer depends on `filepath.IsAbs`, `fs.IsAbsAny` reports a path that is absolute or rooted anywhere, and `fs.ValidateSlashPath` checks paths that use forward slashes everywhere" }
+        {
+          "description": "Path checks that give the same answer on every platform: `fs.ValidatePath` no longer depends on `filepath.IsAbs`, `fs.IsAbsAny` reports a path that is absolute or rooted anywhere, and `fs.ValidateSlashPath` checks paths that use forward slashes everywhere"
+        }
       ],
       "added": [
-        { "description": "`fs.IsAbsAny(p)` reports whether a path is absolute or rooted on any platform: a leading `/` or `\\`, a UNC path, or a drive letter, including the drive-relative `C:x`", "commit": "5acd8e6" },
-        { "description": "`fs.ValidateSlashPath(p)` checks a relative path that uses forward slashes on every platform, such as one inside a repository, an archive or a URL; it also refuses backslashes, colons, and empty or `.` elements, reported as the new `fs.ErrInvalidPath`", "commit": "5baa804" }
+        {
+          "description": "`fs.IsAbsAny(p)` reports whether a path is absolute or rooted on any platform: a leading `/` or `\\`, a UNC path, or a drive letter, including the drive-relative `C:x`",
+          "commit": "5acd8e6"
+        },
+        {
+          "description": "`fs.ValidateSlashPath(p)` checks a relative path that uses forward slashes on every platform, such as one inside a repository, an archive or a URL; it also refuses backslashes, colons, and empty or `.` elements, reported as the new `fs.ErrInvalidPath`",
+          "commit": "5baa804"
+        }
       ],
       "changed": [
-        { "description": "The path tests run every case on every platform instead of keeping absolute-path cases to the platform where each passed", "commit": "e5e7164" }
+        {
+          "description": "The path tests run every case on every platform instead of keeping absolute-path cases to the platform where each passed",
+          "commit": "e5e7164"
+        }
       ],
       "fixed": [
-        { "description": "`fs.ValidatePath` gives the same answer on every platform: it rejected `/etc/passwd` only off Windows, and accepted `\\etc\\passwd` and `\\\\server\\share` off Windows", "commit": "5acd8e6" }
+        {
+          "description": "`fs.ValidatePath` gives the same answer on every platform: it rejected `/etc/passwd` only off Windows, and accepted `\\etc\\passwd` and `\\\\server\\share` off Windows",
+          "commit": "5acd8e6"
+        }
       ],
       "documentation": [
-        { "description": "The fs guide explains which path check to use for a path on this machine, a path from elsewhere, and a forward-slash path; the portable-tests and getting-started guides, README and roadmap list the new functions; release notes for v0.8.0" }
+        {
+          "description": "The fs guide explains which path check to use for a path on this machine, a path from elsewhere, and a forward-slash path; the portable-tests and getting-started guides, README and roadmap list the new functions; release notes for v0.8.0"
+        }
       ]
     },
     {
       "version": "v0.7.0",
       "date": "2026-10-12",
       "highlights": [
-        { "description": "File locking, directory sync and permission checks, so modules stop keeping platform-specific files of their own; and a test that enforces that oscompat has no dependencies" }
+        {
+          "description": "File locking, directory sync and permission checks, so modules stop keeping platform-specific files of their own; and a test that enforces that oscompat has no dependencies"
+        }
       ],
       "added": [
-        { "description": "`fs.Lock(ctx, path)` takes an exclusive advisory lock between processes (`flock` on Unix, `LockFileEx` on Windows), waits until the context ends, and releases when the process exits; `fs.ErrLockUnsupported` on a platform with no locking" },
-        { "description": "`fs.SyncDir(dir)` flushes a directory so a rename is durable, and does nothing where the platform offers no way to" },
-        { "description": "`fs.PermissionsEnforced()`, `fs.IsPrivate`, `fs.CheckPrivate` (wrapping `fs.ErrNotPrivate`) and `fs.ChmodPrivate` for owner-only checks that are correct on Windows" },
-        { "description": "A test that fails on any dependency, `go.sum` or import outside the standard library and the module, and package documentation stating the policy" }
+        {
+          "description": "`fs.Lock(ctx, path)` takes an exclusive advisory lock between processes (`flock` on Unix, `LockFileEx` on Windows), waits until the context ends, and releases when the process exits; `fs.ErrLockUnsupported` on a platform with no locking"
+        },
+        {
+          "description": "`fs.SyncDir(dir)` flushes a directory so a rename is durable, and does nothing where the platform offers no way to"
+        },
+        {
+          "description": "`fs.PermissionsEnforced()`, `fs.IsPrivate`, `fs.CheckPrivate` (wrapping `fs.ErrNotPrivate`) and `fs.ChmodPrivate` for owner-only checks that are correct on Windows"
+        },
+        {
+          "description": "A test that fails on any dependency, `go.sum` or import outside the standard library and the module, and package documentation stating the policy"
+        }
       ],
       "changed": [
-        { "description": "Portable-tests guide: use `fs.PermissionsEnforced()` for mode assertions, close handles in simulated-crash tests, and use `fs.Lock` and `fs.SyncDir`" },
-        { "description": "A MkDocs site with a guide for each package, and release notes for v0.7.0; the `paths` documentation now matches the directories the code returns for cache, runtime and macOS system configuration" }
+        {
+          "description": "Portable-tests guide: use `fs.PermissionsEnforced()` for mode assertions, close handles in simulated-crash tests, and use `fs.Lock` and `fs.SyncDir`"
+        },
+        {
+          "description": "A MkDocs site with a guide for each package, and release notes for v0.7.0; the `paths` documentation now matches the directories the code returns for cache, runtime and macOS system configuration"
+        }
       ]
     },
     {
       "version": "v0.6.0",
       "date": "2026-10-08",
       "highlights": [
-        { "description": "Process liveness, start time, and exec: detect a reused PID and hand the terminal to another program on Unix and Windows" }
+        {
+          "description": "Process liveness, start time, and exec: detect a reused PID and hand the terminal to another program on Unix and Windows"
+        }
       ],
       "added": [
-        { "description": "`process.Exists(pid)` reports whether a process is running; a process owned by another user counts as running, and non-positive PIDs are rejected because they address process groups on Unix", "commit": "1814d6b" },
-        { "description": "`process.StartTime(pid)` returns when a process started (ps on Unix, process creation time on Windows) or `process.ErrNotFound`, so a stale record naming a reused PID can be detected", "commit": "1814d6b" },
-        { "description": "`process.Exec(path, argv)` replaces the current process on Unix and runs the program as a child that exits with its status on Windows", "commit": "1814d6b" }
+        {
+          "description": "`process.Exists(pid)` reports whether a process is running; a process owned by another user counts as running, and non-positive PIDs are rejected because they address process groups on Unix",
+          "commit": "1814d6b"
+        },
+        {
+          "description": "`process.StartTime(pid)` returns when a process started (ps on Unix, process creation time on Windows) or `process.ErrNotFound`, so a stale record naming a reused PID can be detected",
+          "commit": "1814d6b"
+        },
+        {
+          "description": "`process.Exec(path, argv)` replaces the current process on Unix and runs the program as a child that exits with its status on Windows",
+          "commit": "1814d6b"
+        }
       ]
     },
     {
       "version": "v0.5.0",
       "date": "2026-07-12",
       "highlights": [
-        { "description": "Cross-platform test utilities for home directory and duration assertions" }
+        {
+          "description": "Cross-platform test utilities for home directory and duration assertions"
+        }
       ],
       "added": [
-        { "description": "`testutil.SetTempHomeDir()` sets both HOME and USERPROFILE for cross-platform home directory tests", "commit": "93c7a49" },
-        { "description": "`testutil.DurationNonNegative()` for Windows-safe duration checks (timer resolution ~15.6ms)", "commit": "e517f8f" },
-        { "description": "`testutil.AssertDurationNonNegative()` test helper for duration assertions", "commit": "e517f8f" },
-        { "description": "`testutil.WindowsTimerResolution` constant (16ms)", "commit": "e517f8f" }
+        {
+          "description": "`testutil.SetTempHomeDir()` sets both HOME and USERPROFILE for cross-platform home directory tests",
+          "commit": "93c7a49"
+        },
+        {
+          "description": "`testutil.DurationNonNegative()` for Windows-safe duration checks (timer resolution ~15.6ms)",
+          "commit": "e517f8f"
+        },
+        {
+          "description": "`testutil.AssertDurationNonNegative()` test helper for duration assertions",
+          "commit": "e517f8f"
+        },
+        {
+          "description": "`testutil.WindowsTimerResolution` constant (16ms)",
+          "commit": "e517f8f"
+        }
       ],
       "documentation": [
-        { "description": "Update README shields", "commit": "2e728d3" }
+        {
+          "description": "Update README shields",
+          "commit": "2e728d3"
+        }
       ]
     },
     {
       "version": "v0.4.0",
       "date": "2026-06-13",
       "highlights": [
-        { "description": "Cross-platform executable detection for file permission checks" }
+        {
+          "description": "Cross-platform executable detection for file permission checks"
+        }
       ],
       "added": [
-        { "description": "`fs.IsExecutable()` for cross-platform executable file detection", "commit": "7f104d0" },
-        { "description": "`fs.IsExecutableInfo()` for executable detection with existing FileInfo", "commit": "7f104d0" }
+        {
+          "description": "`fs.IsExecutable()` for cross-platform executable file detection",
+          "commit": "7f104d0"
+        },
+        {
+          "description": "`fs.IsExecutableInfo()` for executable detection with existing FileInfo",
+          "commit": "7f104d0"
+        }
       ]
     },
     {
       "version": "v0.3.0",
       "date": "2026-04-27",
       "highlights": [
-        { "description": "Breaking change: Capture functions now return errors for proper error handling" }
+        {
+          "description": "Breaking change: Capture functions now return errors for proper error handling"
+        }
       ],
       "added": [
-        { "description": "`fs.NormalizeLineEndings()` for CRLF to LF conversion", "commit": "9a0bdb7" }
+        {
+          "description": "`fs.NormalizeLineEndings()` for CRLF to LF conversion",
+          "commit": "9a0bdb7"
+        }
       ],
       "changed": [
-        { "description": "**BREAKING**: `testutil.CaptureStdout()` now returns `(string, error)` instead of `string`", "commit": "3e691d6" },
-        { "description": "**BREAKING**: `testutil.CaptureStderr()` now returns `(string, error)` instead of `string`", "commit": "3e691d6" },
-        { "description": "**BREAKING**: `testutil.CaptureOutput()` now returns `(string, string, error)` instead of `(string, string)`", "commit": "3e691d6" }
+        {
+          "description": "**BREAKING**: `testutil.CaptureStdout()` now returns `(string, error)` instead of `string`",
+          "commit": "3e691d6"
+        },
+        {
+          "description": "**BREAKING**: `testutil.CaptureStderr()` now returns `(string, error)` instead of `string`",
+          "commit": "3e691d6"
+        },
+        {
+          "description": "**BREAKING**: `testutil.CaptureOutput()` now returns `(string, string, error)` instead of `(string, string)`",
+          "commit": "3e691d6"
+        }
       ]
     },
     {
       "version": "v0.2.0",
       "date": "2026-04-26",
       "highlights": [
-        { "description": "New testutil package for cross-platform stdout/stderr capture" }
+        {
+          "description": "New testutil package for cross-platform stdout/stderr capture"
+        }
       ],
       "added": [
-        { "description": "`testutil.CaptureStdout()` for capturing stdout during function execution", "commit": "c00a57b" },
-        { "description": "`testutil.CaptureStderr()` for capturing stderr during function execution", "commit": "c00a57b" },
-        { "description": "`testutil.CaptureOutput()` for capturing both stdout and stderr", "commit": "c00a57b" }
+        {
+          "description": "`testutil.CaptureStdout()` for capturing stdout during function execution",
+          "commit": "c00a57b"
+        },
+        {
+          "description": "`testutil.CaptureStderr()` for capturing stderr during function execution",
+          "commit": "c00a57b"
+        },
+        {
+          "description": "`testutil.CaptureOutput()` for capturing both stdout and stderr",
+          "commit": "c00a57b"
+        }
       ],
       "infrastructure": [
-        { "description": "Add shared CI workflows", "commit": "03edfe4" },
-        { "description": "Bump codecov/codecov-action from 5 to 6", "commit": "9509124" }
+        {
+          "description": "Add shared CI workflows",
+          "commit": "03edfe4"
+        },
+        {
+          "description": "Bump codecov/codecov-action from 5 to 6",
+          "commit": "9509124"
+        }
       ]
     },
     {
       "version": "v0.1.0",
       "date": "2025-01-17",
       "highlights": [
-        { "description": "Initial release with cross-platform utilities for Go" }
+        {
+          "description": "Initial release with cross-platform utilities for Go"
+        }
       ],
       "added": [
-        { "description": "`id` package: Cross-platform unique identifier generation using `crypto/rand`" },
-        { "description": "`process` package: Cross-platform process management (detach, signal)" },
-        { "description": "`paths` package: XDG-compliant config/data/cache directory resolution" },
-        { "description": "`fs` package: Path validation, normalization, permissions, birthtime" },
-        { "description": "`tsync` package: Tolerant timestamp comparison for file sync" },
-        { "description": "`localnet` package: Cross-platform local IPC (Unix sockets / TCP)" }
+        {
+          "description": "`id` package: Cross-platform unique identifier generation using `crypto/rand`"
+        },
+        {
+          "description": "`process` package: Cross-platform process management (detach, signal)"
+        },
+        {
+          "description": "`paths` package: XDG-compliant config/data/cache directory resolution"
+        },
+        {
+          "description": "`fs` package: Path validation, normalization, permissions, birthtime"
+        },
+        {
+          "description": "`tsync` package: Tolerant timestamp comparison for file sync"
+        },
+        {
+          "description": "`localnet` package: Cross-platform local IPC (Unix sockets / TCP)"
+        }
       ]
     }
   ]
